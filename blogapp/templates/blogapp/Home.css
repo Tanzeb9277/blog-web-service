@@ -1,0 +1,10 @@
+.card-deck{
+    flex-direction: column;
+}
+.card-deck .card {
+    -ms-flex: 1 0 0%;
+    flex: 1 0 0%;
+    margin-right: 15px;
+    margin: auto !important;
+    overflow: hidden;
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="Home.css">
+</head>
+<body>
+
+<!-- Navigation bar -->
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'blogapp:index' %}">Home</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                <li>
+                    <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
+                    <a class="btn btn-link" href="http://localhost:8000/blogapp/create-post/">Create Post</a>
+                    <a class="btn btn-link" href="{% url 'blogapp:logout' %}">Logout</a>
+                </li>
+                {% else %}
+                <li>
+                    <form class="form-inline" action="{% url 'blogapp:login' %}" method="post">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Username" name="username" >
+                            <input type="password" class="form-control" placeholder="Username" name="psw" >
+                            <button class="btn btn-primary" type="submit">Login</button>
+                            <a class="btn btn-link" href="{% url 'blogapp:registration' %}">Sign Up</a>
+                        </div>
+                    </form>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    {% if post_list %}
+    <div class="container">
+        <div class="card-deck" style="flex-direction: column;">
+            {% for post in post_list %}
+                {% if post.is_author %}
+                     <div class="card" style="width: 36rem; margin: 1vh auto; overflow: hidden;">
+                      <div class="card-body bg-light">
+                          <h5 class="card-title">{{ post.title }}</h5>
+                          <h6 class="card-title" style="opacity: .57;">{{ post.date }}</h6>
+                        <p class="card-text">{{ post.text | safe}}</p>
+                      </div>
+                        <form action="{% url 'blogapp:view' post.id %}" method="get" style="display: flex; margin: 1vh 0;">
+                            {% csrf_token %}
+                            <input class="btn btn-primary"  type="submit" style="margin: auto;"
+                                value="{% if post.is_author %}Edit{% else %}Can't Edit{% endif %} ">
+                        </form>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% else %}
+    <p>No Posts are available.</p>
+{% endif %}
+
+
+
+</body>
+</html>
